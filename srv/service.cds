@@ -1,3 +1,4 @@
+// Odata service ready
 namespace zmanageproject.srv.service;
 
 using {zmanageproject.db.schema} from '../db/schema';
