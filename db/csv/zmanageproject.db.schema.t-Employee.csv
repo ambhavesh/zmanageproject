@@ -1,0 +1,6 @@
+empId,empName,empGender,empExperience,empSalary,currency_code,empCompany_companyId,empModule_moduleId,hasProject_projectId
+1601,Pratik Modh,Male,8 years,250000,INR,100390,1300,8850
+1602,Uddhav Vyas,Male,3 years,80000,INR,100390,1301,8850
+1603,Bhavesh Tiwari,Male,2 years,50000,INR,100391,1302,8851
+1604,Tanya Shroff,Female,2 years,50000,INR,100392,1303,8852
+1605,Kurvesh Patel,Male,1 years,30000,EUR,100392,1303,8852
