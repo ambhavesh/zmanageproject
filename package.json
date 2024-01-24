@@ -19,7 +19,7 @@
   },
   "cds": {
     "requires": {
-      "db": "sqlite"
+      "db": "hana"
     }
   }
 }
