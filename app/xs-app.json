@@ -1,0 +1,17 @@
+{
+    "welcomeFile": "manageproject/webapp/index.html",
+    "authenticationMethod": "route",
+    "routes": [
+        {
+            "source": "^/manageproject/webapp/(.*)",
+            "target": "$1",
+            "localDir": "manageproject/webapp/",
+            "csrfProtection": false
+        },
+        {
+            "source": "^/(.*)$",
+            "target": "$1",
+            "destination": "srv-api"
+        }
+    ]
+}

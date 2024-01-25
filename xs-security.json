@@ -1,0 +1,18 @@
+{
+  "xsappname": "zmanageproject",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": [],
+  "oauth2-configuration": {
+    "credential-types": [
+      "binding-secret",
+      "x509"
+    ],
+    "redirect-uris": [
+      "https://*.api.cf.us10-001.hana.ondemand.com/**",
+      "https://*.applicationstudio.cloud.sap/**",
+      "https://*.cfapps.us10-001.hana.ondemand.com/login/callback"
+    ]
+  }
+}

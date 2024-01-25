@@ -1,40 +1,145 @@
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: zmanageproject
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
-parameters:
-  enable-parallel-deployments: true
-build-parameters:
-  before-all:
-    - builder: custom
-      commands:
-        - npx cds build --production
 modules:
   - name: zmanageproject-srv
     type: nodejs
     path: gen/srv
+    requires:
+      - name: zmanageproject-db
+      - name: uaa_zmanageproject
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
     parameters:
       buildpack: nodejs_buildpack
     build-parameters:
       builder: npm
-    provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          srv-url: ${default-url}
-    requires:
-      - name: zmanageproject-db
-
   - name: zmanageproject-db-deployer
     type: hdb
     path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
     requires:
       - name: zmanageproject-db
+    parameters:
+      buildpack: nodejs_buildpack
+  - name: zmanageproject-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: zmanageproject-destination-service
+        parameters:
+          content-target: true
+      - name: zmanageproject_html_repo_host
+        parameters:
+          service-key:
+            name: zmanageproject_html_repo_host-key
+      - name: uaa_zmanageproject
+        parameters:
+          service-key:
+            name: uaa_zmanageproject-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: zmpar_zmanageproject_html_repo_host
+              ServiceInstanceName: zmanageproject-html5-app-host-service
+              ServiceKeyName: zmanageproject_html_repo_host-key
+              sap.cloud.service: zmpar
+            - Authentication: OAuth2UserTokenExchange
+              Name: zmpar_uaa_zmanageproject
+              ServiceInstanceName: zmanageproject-xsuaa-service
+              ServiceKeyName: uaa_zmanageproject-key
+              sap.cloud.service: zmpar
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+  - name: zmanageproject-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: zmanageproject_html_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - manageproject.zip
+          name: manageproject
+          target-path: resources/
+  - name: manageproject
+    type: html5
+    path: app/manageproject
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms:
+        []
 
+  - name: zmanageproject
+    type: approuter.nodejs
+    path: app
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 1024M
+      memory: 1024M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: uaa_zmanageproject
 resources:
   - name: zmanageproject-db
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
+  - name: zmanageproject-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: zmanageproject-destination-service
+      service-plan: lite
+  - name: zmanageproject_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: zmanageproject-html5-app-host-service
+      service-plan: app-host
+  - name: uaa_zmanageproject
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: zmanageproject-xsuaa-service
+      service-plan: application
+      config:
+        xsappname: zmanageproject-${org}-${space}
+        tenant-mode: dedicated
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx cds build --production
