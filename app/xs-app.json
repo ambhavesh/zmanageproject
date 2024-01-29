@@ -1,5 +1,5 @@
 {
-    "welcomeFile": "manageproject/webapp/index.html",
+    "welcomeFile": "manageproject/webapp/index.html",  
     "authenticationMethod": "route",
     "routes": [
         {
