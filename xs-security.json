@@ -2,8 +2,22 @@
   "xsappname": "zmanageproject",
   "tenant-mode": "dedicated",
   "description": "Security profile of called application",
-  "scopes": [],
-  "role-templates": [],
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Admin scope for zmanageproject"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Admin",
+      "description": "Admin role-templates for zmanageproject",
+      "scope-references": [
+        "$XSAPPNAME.Admin"
+      ],
+      "attribute-references": []
+    }
+  ],
   "oauth2-configuration": {
     "credential-types": [
       "binding-secret",
@@ -14,5 +28,6 @@
       "https://*.applicationstudio.cloud.sap/**",
       "https://*.cfapps.us10-001.hana.ondemand.com/login/callback"
     ]
-  }
+  },
+  "attributes": []
 }

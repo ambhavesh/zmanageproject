@@ -1,0 +1,7 @@
+GET http://localhost:4004/srv-api/ProjectSet
+Authorization: Basic Bhavesh:b12345
+
+###
+
+GET http://localhost:4004/srv-api/EmployeeSet
+Authorization: Basic Bhavesh:b12345
