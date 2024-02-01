@@ -9,9 +9,9 @@ service MANAGEPROJECTSRV @(
     requires: 'authenticated-user'
 ) {
     @odata.draft.enabled: true
-    entity ProjectSet as projection on schema.m.Project;
+    entity ProjectSet    as projection on schema.m.Project;
 
-    entity CompanySet as projection on schema.m.Company;
+    entity CompanySet    as projection on schema.m.Company;
 
     entity EmployeeSet @(restrict: [{
         grant: [
@@ -19,8 +19,9 @@ service MANAGEPROJECTSRV @(
             'WRITE'
         ],
         to   : 'Admin'
-    }, ])             as projection on schema.t.Employee;
+    }, ])                as projection on schema.t.Employee;
 
-    entity ModuleSet  as projection on schema.t.Module;
+    entity ModuleSet     as projection on schema.t.Module;
+    entity AttachmentSet as projection on schema.t.MediaFile;
     function fetchEmployee(companyId : Integer) returns {};
 }

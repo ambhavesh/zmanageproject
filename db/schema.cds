@@ -16,7 +16,7 @@ context m {
             allotedEmployee : Composition of many t.Employee
                                   on allotedEmployee.hasProject = $self;
 
-    }
+    };
 
     entity Company {
         key companyId     : Integer;
@@ -24,7 +24,7 @@ context m {
             companyRating : Integer;
             hasEmployee   : Association to many t.Employee
                                 on hasEmployee.empCompany = $self;
-    }
+    };
 }
 
 context t {
@@ -38,7 +38,7 @@ context t {
             empCompany    : Association to m.Company;
             empModule     : Association to t.Module;
             hasProject    : Association to m.Project;
-    }
+    };
 
     entity Module {
         key moduleId    : Integer;
@@ -46,5 +46,17 @@ context t {
             moduleType  : String;
             hasEmployee : Association to t.Employee
                               on hasEmployee.empModule = $self;
-    }
+    };
+
+    entity MediaFile {
+        key id        : Integer;
+
+            @Core.MediaType  : mediaType
+            content   : LargeBinary;
+
+            @Core.IsMediaType: true
+            mediaType : String;
+            fileName  : String;
+            url       : String
+    };
 }
