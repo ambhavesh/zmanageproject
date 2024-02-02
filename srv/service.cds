@@ -23,5 +23,10 @@ service MANAGEPROJECTSRV @(
 
     entity ModuleSet     as projection on schema.t.Module;
     entity AttachmentSet as projection on schema.t.MediaFile;
-    function fetchEmployee(companyId : Integer) returns {};
+
+    @open
+    type object {};
+
+    function fetchEmployee(companyId : Integer) returns object;
+    function fetchAllEmployee(company : String) returns object;
 }

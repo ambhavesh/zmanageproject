@@ -26,6 +26,29 @@ module.exports = (srv => {
 
     });
 
+    srv.on("fetchAllEmployee", async (req) => {
+        const db = await cds.connect.to('db');
+        let { company } = req.data;
+        if (company === "All Company") {
+            let sEmployeeTable = '472F69FE600046AC8331083B00727CC3.ZMANAGEPROJECT_DB_SCHEMA_T_EMPLOYEE';
+            let sQuery = `SELECT * FROM ${sEmployeeTable}`;
+            try {
+                let tx = db.tx();
+                const aEmployee = await tx.run(sQuery);
+                const oEmployee = {
+                    "status": 200,
+                    "value": aEmployee
+                };
+                const { res } = req.http;
+                res.send(oEmployee);
+            }
+            catch (error) {
+                console.log(error);
+            }
+
+        }
+    });
+
     srv.before("CREATE", "MediaFile", async (req) => {
         var tx = cds.transaction(req);
 
@@ -36,7 +59,7 @@ module.exports = (srv => {
 
 
         //Assign the url by appending the generated id
-        req.data.url = `/srv-api/MediaFile(${req.data.id})/content`;
+        req.data.url = `/srv-api/MediaFile(${req.data.id})/AttachmentSet`;
     });
 
     srv.on("READ", 'MediaFile', async (req, next) => {
@@ -49,12 +72,12 @@ module.exports = (srv => {
         const url = req._.req.path;
         //If the request url contains keyword "content"
         // then read the media content
-        if (url.includes("content")) {
+        if (url.includes("AttachmentSet")) {
             const id = req.data.id;
             var tx = cds.transaction(req);
             // Fetch the media obj from database
             var mediaObj = await tx.run(
-                SELECT.one.from("app.interactions.MediaFile", ["content", "mediaType"]).where(
+                SELECT.one.from("app.interactions.MediaFile", ["AttachmentSet", "mediaType"]).where(
                     "id =",
                     id
                 )
@@ -75,6 +98,7 @@ module.exports = (srv => {
             /****************************************/
         } else return next();
     });
+
 
     function _formatResult(decodedMedia, mediaType) {
         const readable = new Readable();

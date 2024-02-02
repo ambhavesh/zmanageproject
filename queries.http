@@ -7,6 +7,16 @@ GET http://localhost:4004/srv-api/EmployeeSet
 Authorization: Basic Bhavesh:b12345
 
 ###
+GET http://localhost:4004/srv-api/fetchAllEmployee(company='All Company')
+Authorization: Basic Bhavesh:b12345
+
+###
+
+DELETE http://localhost:4004/srv-api/AttachmentSet(id=5)
+Authorization: Basic Bhavesh:b12345
+
+###
 
 GET http://localhost:4004/srv-api/AttachmentSet
+Authorization: Basic Bhavesh:b12345
 
